@@ -1,18 +1,43 @@
-# Drill 1 - correct variable + f-string
-nickname = input("Nickname: ")
-score = 0
-print(f"Welcome, {nickname}! Your score is {score}.")
-print(f"type(nickname) is {type(nickname)}, type(score) is {type(score)}")
+# main.py - Checkpoint A
+def display_title():
+    print("="*40)
+    print("MYSTERY ISLAND - The Lost Lighthouse")
+    print("="*40)
+    print("You wake up on a beach. The lighthouse is dark.")
+    print("Restore the beacon before rescue boat arrives.")
+    print()
 
-# Drill 2 - the input trap
-fav = input("Favorite number? ")  # type 7
-print(f"You typed: {fav}, type is {type(fav)}")
-fav_number = int(fav)  # convert
-print(f"As int + 10 = {fav_number + 10}, type is {type(fav_number)}")
+def main():
+    display_title()
+    name = input("What is your name, explorer? ").strip()
+    if not name:
+        name = "Explorer"
+    print(f"\nWelcome, {name}!\n")
+    
+    # This is the loop that repeats the menu - ANSWER THIS LATER
+    game_running = True
+    while game_running:
+        print("--- Beach ---")
+        print("Waves crash. You see jungle inland.")
+        print("\nWhat do you do?")
+        print("1. Look around")
+        print("2. Go to Jungle (not built yet)")
+        print("q. Quit")
+        
+        choice = input("> ").strip().lower()  # <-- Why strip().lower()?
+        
+        # TODO: Fill these branches
+        if choice == "1":
+            print("You find footprints leading to the jungle.\n")
+        elif choice == "2":
+            print("Jungle path is blocked for now (Checkpoint B).\n")
+        elif choice == "q" or choice == "quit":
+            print(f"Goodbye, {name}!")
+            game_running = False
+        else:
+            # TODO: What should happen here? Should game_running change?
+            print(f"'{choice}' is not valid. Try 1, 2, or q.\n")
+            # Should this consume energy? No, per spec.
 
-# Drill 3 - future player state
-energy = 5
-location = "Beach"
-has_lantern = False
-print(f"Energy: {energy}, Location: {location}, Has lantern: {has_lantern}")
-print(type(energy), type(location), type(has_lantern))
+if __name__ == "__main__":
+    main()
