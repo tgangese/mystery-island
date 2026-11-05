@@ -1,24 +1,33 @@
-# main.py - now uses game.py
 from game import new_game, available_actions, apply_action
 
 def main():
-    # ... your title code ...
-    name = input("Name: ").strip() or "Explorer"
-    player = new_game(name)
+    print("="*40)
+    print("MYSTERY ISLAND - The Lost Lighthouse")
+    print("="*40)
     
-    while not player["game_over"]:
-        print(f"\n--- {player['location']} --- Energy: {player['energy']}")
-        print(f"Actions: {', '.join(available_actions(player))} (type north/south/east/west)")
-        choice = input("> ")
-        msg = apply_action(player, choice)
-        print(msg)
-        
-        # check loss
-        if player["energy"] <= 0 and not player["won"]:
-            print("GAME OVER - you ran out of energy!")
+    while True:  # replay loop
+        name = input("\nWhat is your name? ").strip() or "Explorer"
+        player = new_game(name)
+        print(f"\nWelcome, {name}! Energy: {player['energy']}\n")
+
+        while not player["game_over"]:
+            print(f"--- {player['location']} --- Energy: {player['energy']}")
+            print(f"Inventory: {player['inventory'] or 'empty'}")
+            print(f"Actions: {', '.join(available_actions(player))}")
+            msg = apply_action(player, input("> "))
+            print(msg)
+            if player["energy"] <= 0 and not player["won"]:
+                print("\n*** GAME OVER - You ran out of energy before rescue ***")
+
+        if player["won"]:
+            print("\n*** VICTORY! ***")
+        else:
+            print("\n*** DEFEAT ***")
+
+        again = input("\nPlay again? (y/n): ").strip().lower()
+        if again != "y":
+            print("Thanks for playing!")
             break
-    
-    print(f"Goodbye, {player['name']}!")
 
 if __name__ == "__main__":
     main()

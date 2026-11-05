@@ -1,4 +1,3 @@
-# game.py - game logic, testable without input()
 def new_game(name):
     return {
         "name": name,
@@ -34,6 +33,9 @@ def available_actions(player):
     for direction in ["north", "south", "east", "west"]:
         if direction in LOCATIONS[loc]:
             actions.append(direction)
+    # WIN ACTION must be BEFORE return
+    if player["location"] == "Lighthouse" and "lantern" in player["inventory"]:
+        actions.append("light beacon")
     return actions
 
 def apply_action(player, action):
@@ -60,30 +62,34 @@ def apply_action(player, action):
     if action == "inventory":
         inv = player["inventory"]
         return f"Inventory: {inv if inv else 'empty'}, Energy: {player['energy']}"
-    
-    # Movement - only after all other commands
+
+    # WIN CHECK - BEFORE movement, and BEFORE final invalid return
+    if action in ["light beacon", "light", "light lighthouse"]:
+        if player["location"] != "Lighthouse":
+            return "You can only light the beacon at the Lighthouse."
+        if "lantern" not in player["inventory"]:
+            return "You need lantern to light the beacon."
+        player["won"] = True
+        player["game_over"] = True
+        return "You light the beacon! The light sweeps over the sea. Rescue boat sees you! YOU WIN!"
+
     if action in ["north", "south", "east", "west"]:
         current = player["location"]
         if action not in LOCATIONS[current]:
             return f"Cannot go {action} from {current}."
-        
         dest = LOCATIONS[current][action]
-
-        # BLOCKS - T6 and T7
         if current == "Cave" and dest == "Old Bridge":
             if "rope" not in player["inventory"]:
                 return "The bridge is broken. You need rope to cross."
         if current == "Old Bridge" and dest == "Lighthouse":
             if "lantern" not in player["inventory"]:
                 return "It's too dark to enter Lighthouse. You need lantern."
-
         if player["energy"] <= 0:
             player["game_over"] = True
             return "Out of energy! You collapse."
-
         player["location"] = dest
         player["energy"] -= 1
-        if player["energy"] <= 0:
+        if player["energy"] <= 0 and not player["won"]:
             player["game_over"] = True
             return f"You moved to {dest} but ran out of energy!"
         return f"You moved to {dest}. Energy: {player['energy']}"
